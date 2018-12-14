@@ -12,13 +12,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * Created by stephan on 20.03.16.
  */
 public class JwtUser implements UserDetails {
-
-    private final Long id;
+	private static final long serialVersionUID = -756497092925944731L;
+	
+	private final Long id;
     private final String username;
     private final String firstname;
     private final String lastname;
     private final String password;
-    private final String email;
     private final Collection<? extends GrantedAuthority> authorities;
     private final boolean enabled;
     private final Date lastPasswordResetDate;
@@ -28,7 +28,6 @@ public class JwtUser implements UserDetails {
           String username,
           String firstname,
           String lastname,
-          String email,
           String password, Collection<? extends GrantedAuthority> authorities,
           boolean enabled,
           Date lastPasswordResetDate
@@ -37,7 +36,6 @@ public class JwtUser implements UserDetails {
         this.username = username;
         this.firstname = firstname;
         this.lastname = lastname;
-        this.email = email;
         this.password = password;
         this.authorities = authorities;
         this.enabled = enabled;
@@ -80,9 +78,6 @@ public class JwtUser implements UserDetails {
         return lastname;
     }
 
-    public String getEmail() {
-        return email;
-    }
 
     @JsonIgnore
     @Override
