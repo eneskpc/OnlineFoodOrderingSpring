@@ -1,6 +1,7 @@
 package org.zerhusen.rest;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,7 +31,7 @@ public class AddressService {
 
 	@Autowired
 	AddressRepository addressRepository;
-	
+
 	@Autowired
 	DistrictRepository districtRepository;
 
@@ -51,27 +53,69 @@ public class AddressService {
 		return userAddresses;
 	}
 
-	@RequestMapping(path = "/address", method = RequestMethod.POST)
-	public boolean setAddress(HttpServletRequest request, @RequestBody AddressDTO newAddressDTO) {
+	@RequestMapping(path = "/address/{id}", method = RequestMethod.GET)
+	public Optional<Address> getAddress(HttpServletRequest request, @PathVariable Long id) {
 		String token = request.getHeader(tokenHeader).substring(7);
 		String username = jwtTokenUtil.getUsernameFromToken(token);
 		User currentUser = userRepository.findByUsername(username);
-		
-		System.out.println(newAddressDTO.fullAddress);
-		System.out.println(newAddressDTO.title);
-		System.out.println(newAddressDTO.districtID);
-		
+
+		Optional<Address> desiredAddress = addressRepository.findById(id);
+		desiredAddress = desiredAddress.filter(a -> a.getUser().equals(currentUser));
+		return desiredAddress;
+	}
+
+	@RequestMapping(path = "/address", method = RequestMethod.POST)
+	public boolean saveAddress(HttpServletRequest request, @RequestBody AddressDTO newAddressDTO) {
+		String token = request.getHeader(tokenHeader).substring(7);
+		String username = jwtTokenUtil.getUsernameFromToken(token);
+		User currentUser = userRepository.findByUsername(username);
+
 		Address newAddress = new Address();
 		newAddress.setFullAddress(newAddressDTO.fullAddress);
 		newAddress.setTitle(newAddressDTO.title);
-		
-		District receivedDistrict = districtRepository.findById(newAddressDTO.districtID).get();
+		newAddress.setTelephone(newAddressDTO.telephone);
+
+		District receivedDistrict = districtRepository.getOne(newAddressDTO.districtId);
 		newAddress.setDistrict(receivedDistrict);
 		newAddress.setUser(currentUser);
-		
+
 		if (addressRepository.save(newAddress) != null)
 			return true;
 		return false;
+	}
+
+	@RequestMapping(path = "/address/{id}", method = RequestMethod.POST)
+	public boolean updateAddress(HttpServletRequest request, @RequestBody AddressDTO existingAddressDTO,
+			@PathVariable Long id) {
+		String token = request.getHeader(tokenHeader).substring(7);
+		String username = jwtTokenUtil.getUsernameFromToken(token);
+		User currentUser = userRepository.findByUsername(username);
+
+		Address newAddress = new Address();
+		newAddress.setId(id);
+		newAddress.setFullAddress(existingAddressDTO.fullAddress);
+		newAddress.setTitle(existingAddressDTO.title);
+		newAddress.setTelephone(existingAddressDTO.telephone);
+
+		District receivedDistrict = districtRepository.getOne(existingAddressDTO.districtId);
+		newAddress.setDistrict(receivedDistrict);
+		newAddress.setUser(currentUser);
+
+		if (addressRepository.save(newAddress) != null)
+			return true;
+		return false;
+	}
+
+	@RequestMapping(path = "/address/{id}", method = RequestMethod.DELETE)
+	public boolean deleteAddress(HttpServletRequest request, @PathVariable Long id) {
+		String token = request.getHeader(tokenHeader).substring(7);
+		String username = jwtTokenUtil.getUsernameFromToken(token);
+		User currentUser = userRepository.findByUsername(username);
+
+		Address existingAddress = addressRepository.findById(id).filter(a -> a.getUser().equals(currentUser)).get();
+
+		addressRepository.delete(existingAddress);
+		return true;
 	}
 
 }

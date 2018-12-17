@@ -16,20 +16,23 @@ public class District {
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
-	
+	private Long id;
+
 	@Column(name = "district_name")
 	private String districtName;
 	
+	@Column(name = "seo_link")
+	private String seoLink;
+
 	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "city_id")
 	private City city;
 
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -47,5 +50,13 @@ public class District {
 
 	public void setCity(City city) {
 		this.city = city;
+	}
+
+	public String getSeoLink() {
+		return seoLink;
+	}
+
+	public void setSeoLink(String seoLink) {
+		this.seoLink = seoLink;
 	}
 }

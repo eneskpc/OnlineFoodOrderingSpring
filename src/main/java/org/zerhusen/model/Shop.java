@@ -26,11 +26,23 @@ public class Shop {
 	@Column(name = "shop_name")
 	private String shopName;
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@Column(name = "seo_link")
+	private String seoLink;
+
+	@Column(name = "min_price")
+	private double minPrice;
+
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "shop_responsibles", joinColumns = {
 			@JoinColumn(name = "shop_id", referencedColumnName = "id") }, inverseJoinColumns = {
 					@JoinColumn(name = "user_id", referencedColumnName = "id") })
 	private List<User> users;
+
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "shop_districts", joinColumns = {
+			@JoinColumn(name = "shop_id", referencedColumnName = "id") }, inverseJoinColumns = {
+					@JoinColumn(name = "district_id", referencedColumnName = "id") })
+	private List<District> districts;
 
 	public int getId() {
 		return id;
@@ -54,5 +66,29 @@ public class Shop {
 
 	public void setUsers(List<User> users) {
 		this.users = users;
+	}
+
+	public List<District> getDistricts() {
+		return districts;
+	}
+
+	public void setDistricts(List<District> districts) {
+		this.districts = districts;
+	}
+
+	public double getMinPrice() {
+		return minPrice;
+	}
+
+	public void setMinPrice(double minPrice) {
+		this.minPrice = minPrice;
+	}
+
+	public String getSeoLink() {
+		return seoLink;
+	}
+
+	public void setSeoLink(String seoLink) {
+		this.seoLink = seoLink;
 	}
 }

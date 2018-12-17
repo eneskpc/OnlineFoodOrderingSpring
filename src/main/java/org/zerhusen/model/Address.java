@@ -22,14 +22,17 @@ public class Address {
 
 	@Column(name = "title")
 	private String title;
-	
+
 	@Column(name = "full_address")
 	private String fullAddress;
-	
+
+	@Column(name = "telephone")
+	private String telephone;
+
 	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "user_id")
 	private User user;
-	
+
 	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "district_id")
 	private District district;
@@ -72,5 +75,13 @@ public class Address {
 
 	public void setDistrict(District district) {
 		this.district = district;
+	}
+
+	public String getTelephone() {
+		return telephone;
+	}
+
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
 	}
 }
