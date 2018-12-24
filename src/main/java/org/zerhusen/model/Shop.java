@@ -43,6 +43,12 @@ public class Shop {
 			@JoinColumn(name = "shop_id", referencedColumnName = "id") }, inverseJoinColumns = {
 					@JoinColumn(name = "district_id", referencedColumnName = "id") })
 	private List<District> districts;
+	
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "shop_payment_methods", joinColumns = {
+			@JoinColumn(name = "shop_id", referencedColumnName = "id") }, inverseJoinColumns = {
+					@JoinColumn(name = "payment_method_id", referencedColumnName = "id") })
+	private List<PaymentMethod> paymentMethods;
 
 	public int getId() {
 		return id;
@@ -90,5 +96,13 @@ public class Shop {
 
 	public void setSeoLink(String seoLink) {
 		this.seoLink = seoLink;
+	}
+
+	public List<PaymentMethod> getPaymentMethods() {
+		return paymentMethods;
+	}
+
+	public void setPaymentMethods(List<PaymentMethod> paymentMethods) {
+		this.paymentMethods = paymentMethods;
 	}
 }

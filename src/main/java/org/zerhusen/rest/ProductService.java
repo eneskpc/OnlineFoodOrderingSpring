@@ -1,5 +1,6 @@
 package org.zerhusen.rest;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -26,9 +27,9 @@ public class ProductService {
 
 	@RequestMapping(path = "/products/{shopSeo}", method = RequestMethod.GET)
 	public Iterable<Product> getProductByShopLink(@PathVariable String shopSeo) {
-		Shop currentShop = shopRepository.findAll().stream().filter(s -> s.getSeoLink().equals(shopSeo))
-				.collect(Collectors.toList()).get(0);
-
+		List<Shop> shops = shopRepository.findAll().stream().filter(s -> s.getSeoLink().equals(shopSeo))
+				.collect(Collectors.toList());
+		Shop currentShop = shops.get(0);
 		return productRepository.findAll().stream().filter(p -> p.getShop().equals(currentShop))
 				.collect(Collectors.toList());
 	}

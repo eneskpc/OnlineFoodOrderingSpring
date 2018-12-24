@@ -1,6 +1,7 @@
 package org.zerhusen.rest;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +31,7 @@ public class ShopService {
 
 	@Autowired
 	UserRepository userRepository;
-	
+
 	@Autowired
 	DistrictRepository districtRepository;
 
@@ -49,11 +50,24 @@ public class ShopService {
 			return shops.get(0);
 		return null;
 	}
+
+	@RequestMapping(value = "currentShopWithId/{id}")
+	public Optional<Shop> getShopWithId(@PathVariable Long id) {
+		return shopRepository.findById(id);
+	}
 	
+	@RequestMapping(value = "currentShopWithLink/{link}")
+	public Shop getShopWithLink(@PathVariable String link) {
+		List<Shop> allShops = shopRepository.findAll();
+		return allShops.stream().filter(s->s.getSeoLink().equals(link)).collect(Collectors.toList()).get(0);
+	}
+
 	@RequestMapping(value = "shops/{districtSeo}")
 	public List<Shop> getAllShops(@PathVariable String districtSeo) {
-		District currentDistrict = districtRepository.findAll().stream().filter(d->d.getSeoLink().equals(districtSeo)).collect(Collectors.toList()).get(0);
-		
-		return shopRepository.findAll().stream().filter(s->s.getDistricts().contains(currentDistrict)).collect(Collectors.toList());
+		District currentDistrict = districtRepository.findAll().stream().filter(d -> d.getSeoLink().equals(districtSeo))
+				.collect(Collectors.toList()).get(0);
+
+		return shopRepository.findAll().stream().filter(s -> s.getDistricts().contains(currentDistrict))
+				.collect(Collectors.toList());
 	}
 }

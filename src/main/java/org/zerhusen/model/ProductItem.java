@@ -19,12 +19,16 @@ public class ProductItem {
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	
 	@Column(name = "item_name")
 	private String itemName;
+	
 	@Column(name = "item_type")
 	private String itemType;
+	
 	@Column(name = "product_id")
-	private Long product_id;
+	private Long productId;
+	
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "item_id")
 	private List<ProductItemOption> productItemOptions;
@@ -61,11 +65,11 @@ public class ProductItem {
 		this.itemType = itemType;
 	}
 
-	public Long getProduct_id() {
-		return product_id;
+	public Long getProductId() {
+		return productId;
 	}
 
-	public void setProduct_id(Long product_id) {
-		this.product_id = product_id;
+	public void setProductId(Long product_id) {
+		this.productId = product_id;
 	}
 }
